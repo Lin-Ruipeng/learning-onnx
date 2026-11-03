@@ -1,0 +1,35 @@
+[project]
+name = "deploy-onnx"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "folin", email = "likeszm@foxmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "numpy>=2.5.4",
+    "onnx>=1.20.0",
+    "onnxruntime>=1.24.0",
+    "onnxscript>=0.7.2",
+    "opencv-python>=4.13.0",
+    "requests>=2.34.2",
+    "torch>=2.15.0",
+    "torchvision>=0.29.1",
+]
+
+[project.scripts]
+deploy-onnx = "deploy_onnx:main"
+
+[build-system]
+requires = ["uv_build>=0.13.6,<0.14.0"]
+build-backend = "uv_build"
+
+[[tool.uv.index]]
+name = "pytorch-cu132"
+url = "https://download.pytorch.org/whl/cu132"
+explicit = true
+
+[tool.uv.sources]
+torch = [{ index = "pytorch-cu132" }]
+torchvision = [{ index = "pytorch-cu132" }]
