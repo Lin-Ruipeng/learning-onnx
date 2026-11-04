@@ -72,3 +72,8 @@ uv sync          # 按 pyproject.toml + uv.lock 建 .venv
 
 - [open-mmlab/mmdeploy](https://github.com/open-mmlab/mmdeploy) —— 教程原文与 C++ 插件实现的来源，Apache-2.0
 - [open-mmlab/mmagic](https://github.com/open-mmlab/mmagic) —— SRCNN 权重与 `face.png` 测试图
+
+## 许可证
+
+本仓库的代码与笔记以 [MIT](LICENSE) 许可发布（Copyright (c) 2026 Lin Ruipeng）。
+引用的教程原文版权归 OpenMMLab 所有，遵循 Apache-2.0，本仓库不包含其正文。
