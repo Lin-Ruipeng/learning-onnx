@@ -8,3 +8,13 @@ wheels/
 
 # Virtual environments
 .venv
+
+# 下载缓存与半成品
+.cache/
+*.part
+
+# 推理后端产物（体积大、可重建）。各章 outputs/ 里 <1MB 的证据图和 .onnx 仍然入库
+*.engine
+*.plan
+*.trt
+*.so
