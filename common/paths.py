@@ -13,7 +13,7 @@ MODELS = ROOT / "models"
 
 
 def outputs(chapter: str) -> Path:
-    """返回某章的产物目录（不存在则创建），如 ``outputs("ch03_pytorch2onnx")``。"""
+    """返回某章的产物目录（不存在则创建），如 ``outputs("ch01_introduction_to_deployment")``。"""
     path = ROOT / chapter / "outputs"
     path.mkdir(parents=True, exist_ok=True)
     return path

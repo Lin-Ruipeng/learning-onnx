@@ -10,15 +10,26 @@
 
 ## 代码与产物
 
-本章的示例模型和推理代码与第 3 章是同一份，已合并到：
+| 文件 | 说明 |
+|---|---|
+| `export.py` | 下载权重/测试图 → torch 推理 → `torch.onnx.export` → `onnx.checker` → ORT 推理，并打印两条路径的最大像素差 |
+| `outputs/srcnn.onnx` + `srcnn.onnx.data` | 导出结果（外部数据文件必须与 `.onnx` 同目录） |
+| `outputs/face_torch.png` | PyTorch 的 3 倍超分结果 |
+| `outputs/face_ort.png` | ONNX Runtime 的同一张图，应与上一张肉眼无差 |
 
-- 模型定义与权重加载：`common/srcnn.py`
-- 完整流程（下载 → torch 推理 → 导出 → 校验 → ORT 推理）：`ch03_pytorch2onnx/export.py`
-- 产物：`ch03_pytorch2onnx/outputs/`
+模型定义与权重加载其实第一、二、三章都在用，已抽到 `common/srcnn.py`。
 
 ```bash
-uv run python -m ch03_pytorch2onnx.export
+uv run python -m ch01_introduction_to_deployment.export
 ```
+
+实测（torch 2.15 + onnxruntime 1.31，CPU）：`Model correct`，两条路径输出最大像素差 1/255，肉眼无差。
+
+## 与原教程的差异
+
+- 原文用 `opset_version=11`，这里用 **18**：torch 2.x 默认走 `torch.export` 导出器，低 opset 会被降级/告警。
+- 原文把下载、推理、导出写成顶层脚本；这里的 `export.py` 拆成函数 + `__main__` 守卫，路径由 `common.paths` 提供（原文依赖 CWD）。
+- 原文 ORT 推理用默认 provider；这里显式指定 `CPUExecutionProvider`，避免 CUDA EP 的初始化开销。
 
 ## 笔记
 

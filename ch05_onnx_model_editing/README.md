@@ -20,7 +20,7 @@ ch05_onnx_model_editing/
 └── outputs/                # build_from_scratch.onnx、srcnn_edited.onnx、中间特征图
 ```
 
-输入模型复用第 3 章的产物 `ch03_pytorch2onnx/outputs/srcnn.onnx`（只读）。
+输入模型复用第 1 章导出的 `ch01_introduction_to_deployment/outputs/srcnn.onnx`（只读）。
 
 ## 笔记
 

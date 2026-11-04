@@ -1,10 +1,10 @@
-"""第三章：PyTorch 转 ONNX 详解 —— 导出、校验、用 ONNX Runtime 跑一遍。
+"""第一章：模型部署简介 —— 把 PyTorch 的 SRCNN 导出成 ONNX，再用 ONNX Runtime 跑一遍。
 
 运行（必须从仓库根目录，这样 ``common`` 才在 sys.path 里）::
 
-    uv run python -m ch03_pytorch2onnx.export
+    uv run python -m ch01_introduction_to_deployment.export
 
-产物落在 ``ch03_pytorch2onnx/outputs/``：srcnn.onnx(+.data)、face_torch.png、face_ort.png
+产物落在 ``ch01_introduction_to_deployment/outputs/``：srcnn.onnx(+.data)、face_torch.png、face_ort.png
 """
 
 import cv2
@@ -21,7 +21,7 @@ FACE_URL = (
     "https://raw.githubusercontent.com/open-mmlab/mmagic/master/tests/data/face/000001.png"
 )
 
-OUT = outputs("ch03_pytorch2onnx")
+OUT = outputs("ch01_introduction_to_deployment")
 
 
 def to_nchw(img: np.ndarray) -> np.ndarray:

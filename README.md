@@ -26,11 +26,11 @@
 ├── assets/          # 公共输入样本（face.png）
 ├── models/          # 公共权重（srcnn.pth，85KB，已入库；缺失时脚本会自动下载）
 ├── common/          # 跨章节复用：paths / download / srcnn
-├── ch01_introduction_to_deployment/   # 第 1 章：简介（代码并入 ch03）
-├── ch02_deployment_challenges/        # 第 2 章：动态放大倍数
-├── ch03_pytorch2onnx/                 # 第 3 章：导出 → 校验 → ORT 推理  ✅ 已跑通
-│   ├── export.py
+├── ch01_introduction_to_deployment/   # 第 1 章：部署第一个模型  ✅ 已跑通
+│   ├── export.py    # 下载 → torch 推理 → 导出 ONNX → 校验 → ORT 推理
 │   └── outputs/     # srcnn.onnx(+.data)、face_torch.png、face_ort.png
+├── ch02_deployment_challenges/        # 第 2 章：动态放大倍数
+├── ch03_pytorch2onnx/                 # 第 3 章：导出原理（trace/script、symbolic）
 ├── ch04_onnx_custom_op/               # 第 4 章：自定义算子
 ├── ch05_onnx_model_editing/           # 第 5 章：图的读写与调试
 ├── ch06_tensorrt_inference/           # 第 6 章：TensorRT
@@ -50,19 +50,19 @@ uv sync          # 按 pyproject.toml + uv.lock 建 .venv
 1. **从仓库根目录运行**，并且用 `-m` 形式，这样 `common` 才在 `sys.path` 上：
 
    ```bash
-   uv run python -m ch03_pytorch2onnx.export
+   uv run python -m ch01_introduction_to_deployment.export
    ```
 
-2. **路径只从 `common.paths` 取**（`ASSETS`、`MODELS`、`outputs("ch03_pytorch2onnx")`），脚本里不写 `"face.png"` 这种相对 CWD 的字面量。
+2. **路径只从 `common.paths` 取**（`ASSETS`、`MODELS`、`outputs("ch01_introduction_to_deployment")`），脚本里不写 `"face.png"` 这种相对 CWD 的字面量。
 3. **每章只写自己的 `chNN_xxx/outputs/`**，不往仓库根目录或 `models/` 写。`models/srcnn.pth` 只读。
 4. **入库标准**：<1MB 的样本、权重、导出模型、对比图提交进 git；大体积或可重建的（`*.engine`、`*.plan`、`*.so`、下载缓存）走 `.gitignore` + 脚本重建。
 5. 每章的 `README.md` 是笔记主体；本文件只做索引。
 
 ## 进度
 
-- [x] 1 模型部署简介
+- [x] 1 模型部署简介（`ch01_introduction_to_deployment/export.py`）
 - [ ] 2 部署中的难题
-- [x] 3 PyTorch 转 ONNX 详解（`ch03_pytorch2onnx/export.py`）
+- [ ] 3 PyTorch 转 ONNX 详解
 - [ ] 4 在 PyTorch 中支持更多 ONNX 算子
 - [ ] 5 ONNX 模型的修改与调试
 - [ ] 6 TensorRT 模型构建与推理

@@ -11,19 +11,21 @@
 
 ## 代码与产物
 
+本章重点在原理，用第 1 章的现成产物当案例，暂不需要新脚本：
+
 | 文件 | 说明 |
 |---|---|
-| `export.py` | 下载权重与 `face.png` → torch 推理 → `torch.onnx.export`(opset 18) → `onnx.checker` → ORT 推理，并打印两条路径的最大像素差 |
-| `outputs/srcnn.onnx` + `srcnn.onnx.data` | 导出结果（权重 >2GB 阈值以下，但 torch 仍按外部数据写出 `data` 文件，两者必须同目录） |
-| `outputs/face_torch.png` | PyTorch 的 3 倍超分结果 |
-| `outputs/face_ort.png` | ONNX Runtime 的同一张图，应与上一张肉眼无差 |
+| `export.py`（第 1 章） | 下载权重与 `face.png` → torch 推理 → `torch.onnx.export`(opset 18) → `onnx.checker` → ORT 推理 |
+| `outputs/srcnn.onnx` + `srcnn.onnx.data`（第 1 章） | 待分析的对象（`Resize → Conv → Relu → Conv → Relu → Conv`，6 个节点） |
 
-```bash
-uv run python -m ch03_pytorch2onnx.export
+练习用的脚本计划放在本目录：
+
+```text
+ch03_pytorch2onnx/
+├── export_dynamic.py      # dynamic_axes 导出 + onnx.shape_inference 验证
+└── outputs/
 ```
-
-实测（torch 2.15 + onnxruntime 1.31，CPU）：`Model correct`，两条路径输出最大像素差 1/255，肉眼无差。
 
 ## 笔记
 
-<!-- 待补：dynamic_axes 的写法与踩坑（导出后如何用 onnx.shape_inference 确认）、opset 18 与 11 的差别 -->
+<!-- 待补：dynamic_axes 的写法与踩坑、trace 与 script 在同一模型上的差异、opset 18 与 11 的差别 -->
