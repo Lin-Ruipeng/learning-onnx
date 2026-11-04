@@ -14,6 +14,7 @@ import onnxruntime
 import torch
 
 from common.download import ensure
+from common.image import to_hwc, to_nchw
 from common.paths import ASSETS, outputs
 from common.srcnn import init_torch_model
 
@@ -22,18 +23,6 @@ FACE_URL = (
 )
 
 OUT = outputs("ch01_introduction_to_deployment")
-
-
-def to_nchw(img: np.ndarray) -> np.ndarray:
-    """HWC(uint8) -> NCHW(float32)。"""
-    return np.expand_dims(np.transpose(img.astype(np.float32), [2, 0, 1]), 0)
-
-
-def to_hwc(tensor: np.ndarray) -> np.ndarray:
-    """NCHW -> HWC(uint8)，并把超分结果截断回 [0, 255]。"""
-    img = np.squeeze(tensor, 0)
-    img = np.clip(img, 0, 255)
-    return np.transpose(img, [1, 2, 0]).astype(np.uint8)
 
 
 def main() -> None:

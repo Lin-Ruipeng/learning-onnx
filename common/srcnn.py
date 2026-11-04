@@ -1,4 +1,4 @@
-"""教程第 1~3 章共用的超分辨率模型。"""
+"""教程第 1~3 章共用的超分辨率模型与权重加载。"""
 
 from pathlib import Path
 
@@ -16,6 +16,8 @@ SRCNN_WEIGHTS_URL = (
 
 
 class SuperResolutionNet(nn.Module):
+    """第 1 章的版本：放大倍数写死在 ``nn.Upsample`` 里。"""
+
     def __init__(self, upscale_factor: int = 3) -> None:
         super().__init__()
         self.upscale_factor = upscale_factor
@@ -37,23 +39,26 @@ class SuperResolutionNet(nn.Module):
         return out
 
 
-def init_torch_model(
-    upscale_factor: int = 3, weights: Path | None = None
-) -> SuperResolutionNet:
-    """构造模型并载入官方权重。
+def load_weights(model: nn.Module, weights: Path | None = None) -> nn.Module:
+    """把官方 checkpoint 载进任意 SRCNN 变体（第 2 章的改版也能用同一份权重）。
 
-    官方 checkpoint 的 key 带 ``generator.`` 前缀（多卡训练留下的），
-    这里统一去掉第一段后再 load_state_dict。
+    官方 checkpoint 的 key 带 ``generator.`` 前缀（MMEditing 多卡训练留下的），
+    这里统一去掉第一段后再 ``load_state_dict``。
     """
     weights = Path(weights) if weights is not None else MODELS / "srcnn.pth"
     ensure(SRCNN_WEIGHTS_URL, weights)
 
-    model = SuperResolutionNet(upscale_factor=upscale_factor)
     state_dict = torch.load(weights, map_location="cpu", weights_only=False)["state_dict"]
-
     for old_key in list(state_dict.keys()):
         state_dict[".".join(old_key.split(".")[1:])] = state_dict.pop(old_key)
 
     model.load_state_dict(state_dict)
     model.eval()
     return model
+
+
+def init_torch_model(
+    upscale_factor: int = 3, weights: Path | None = None
+) -> SuperResolutionNet:
+    """构造第 1 章的模型并载入官方权重。"""
+    return load_weights(SuperResolutionNet(upscale_factor=upscale_factor), weights)
