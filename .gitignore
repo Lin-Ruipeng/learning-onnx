@@ -13,8 +13,11 @@ wheels/
 .cache/
 *.part
 
-# 推理后端产物（体积大、可重建）。各章 outputs/ 里 <1MB 的证据图和 .onnx 仍然入库
+# 推理后端产物（体积大、可重建）
 *.engine
 *.plan
 *.trt
 *.so
+
+# 各章 outputs/ 里均为可重建产物，不再入库
+outputs/
