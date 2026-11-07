@@ -27,3 +27,24 @@ ch04_onnx_custom_op/
 ## 笔记
 
 <!-- 待补：register_custom_op_symbolic 在 PyTorch 2.x 是否被 onnxscript 取代、各方式实测能否通过 onnx.checker -->
+
+要使 PyTorch 算子顺利转换到 ONNX ，我们需要保证以下三个环节都不出错：
+
+- 算子在 PyTorch 中有实现
+- 有把该 PyTorch 算子映射成一个或多个 ONNX 算子的方法
+- ONNX 有相应的算
+
+在实际部署中，这三部分的内容都可能有所缺失。其中最坏的情况是：我们定义了一个全新的算子，它不仅缺少 PyTorch 实现，还缺少 PyTorch 到 ONNX 的映射关系。但所谓车到山前必有路，对于这三个环节，我们也分别都有以下的添加支持的方法：
+
+- PyTorch 算子
+  - 组合现有算子
+  - 添加 TorchScript 算子
+  - 添加普通 C++ 拓展算子
+- 映射方法
+  - 为 ATen 算子添加符号函数
+  - 为 TorchScript 算子添加符号函数
+  - 封装成 torch.autograd.Function 并添加符号函数
+- ONNX 算子
+  - 使用现有 ONNX 算子
+  - 定义新 ONNX 算子
+

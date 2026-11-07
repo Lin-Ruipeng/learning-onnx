@@ -17,7 +17,7 @@
 | `outputs/face_torch.png` | PyTorch 的 3 倍超分结果 |
 | `outputs/face_ort.png` | ONNX Runtime 的同一张图，应与上一张肉眼无差 |
 
-模型定义与权重加载其实第一、二、三章都在用，已抽到 `common/srcnn.py`。
+模型定义与权重加载第一、二章都在用，已抽到 `common/srcnn.py`（第 3 章只分析它的导出产物，不 import 这个模块）。
 
 ```bash
 uv run python -m ch01_introduction_to_deployment.export

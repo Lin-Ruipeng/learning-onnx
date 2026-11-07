@@ -32,7 +32,11 @@
 ├── ch02_deployment_challenges/        # 第 2 章：动态放大倍数  ✅ 已跑通
 │   ├── export_dynamic.py            # autograd.Function → Resize 节点，倍数变成输入
 │   └── outputs/     # srcnn_dynamic.onnx、face_torch_x3.png、face_ort_x4.png
-├── ch03_pytorch2onnx/                 # 第 3 章：导出原理（trace/script、symbolic）
+├── ch03_pytorch2onnx/                 # 第 3 章：导出原理（trace/script、symbolic）  ✅ 已跑通
+│   ├── trace_and_script.py          # trace vs script：控制流被展开还是保留为 Loop 节点
+│   ├── dynamic_axes.py              # 三种 dynamic_axes 导出 + ORT 形状验证
+│   ├── export_tips.py               # is_in_onnx_export 条件推理、中断张量跟踪
+│   └── outputs/     # model_{2,3}_{trace,script}.onnx、model_static/dynamic_*.onnx
 ├── ch04_onnx_custom_op/               # 第 4 章：自定义算子
 ├── ch05_onnx_model_editing/           # 第 5 章：图的读写与调试
 ├── ch06_tensorrt_inference/           # 第 6 章：TensorRT
@@ -57,14 +61,14 @@ uv sync          # 按 pyproject.toml + uv.lock 建 .venv
 
 2. **路径只从 `common.paths` 取**（`ASSETS`、`MODELS`、`outputs("ch01_introduction_to_deployment")`），脚本里不写 `"face.png"` 这种相对 CWD 的字面量。
 3. **每章只写自己的 `chNN_xxx/outputs/`**，不往仓库根目录或 `models/` 写。`models/srcnn.pth` 只读。
-4. **入库标准**：<2MB 的样本、权重、导出模型、对比图提交进 git；大体积或可重建的（`*.engine`、`*.plan`、`*.so`、下载缓存）走 `.gitignore` + 脚本重建。
+4. **入库标准**：<2MB 的样本与权重（`models/srcnn.pth`）提交进 git；各章 `outputs/` 均为可重建产物、不入库，大体积或可重建的（`*.engine`、`*.plan`、`*.so`、下载缓存）同样走 `.gitignore` + 脚本重建。
 5. 每章的 `README.md` 是笔记主体；本文件只做索引。
 
 ## 进度
 
 - [x] 1 模型部署简介（`ch01_introduction_to_deployment/export.py`）
 - [x] 2 部署中的难题（`ch02_deployment_challenges/export_dynamic.py`）
-- [ ] 3 PyTorch 转 ONNX 详解
+- [x] 3 PyTorch 转 ONNX 详解（`ch03_pytorch2onnx/trace_and_script.py`、`dynamic_axes.py`、`export_tips.py`）
 - [ ] 4 在 PyTorch 中支持更多 ONNX 算子
 - [ ] 5 ONNX 模型的修改与调试
 - [ ] 6 TensorRT 模型构建与推理
