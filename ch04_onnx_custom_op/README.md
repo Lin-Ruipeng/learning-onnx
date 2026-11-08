@@ -17,8 +17,10 @@
 ```text
 ch04_onnx_custom_op/
 ├── op_Asinh.py            # 给 aten 算子注册符号函数（torch.asinh -> ONNX Asinh）+ 数值验证
+├── DeformConv.py          # 给 torchvision 算子注册符号函数（custom::deform_conv2d）+ 结构验证
 └── outputs/
-    └── asinh.onnx
+    ├── asinh.onnx
+    └── dcn.onnx
 ```
 
 运行方式同样是 `uv run python -m ch04_onnx_custom_op.<脚本名>`（需在仓库根目录执行）。
@@ -33,6 +35,14 @@ ch04_onnx_custom_op/
 - **opset 不必等于注册值**：符号函数注册在 opset 9，导出用 opset 20 也能命中 —— 查找规则是“不超过目标 opset 的最大已注册版本”。
 - **输入名别再写死 `"0"`**：新版导出器会沿用 traced graph 的输入名。导出时显式传 `input_names=["input"]`，ORT 侧用 `sess.get_inputs()[0].name` 取真实输入名。
 - **新导出器路线**（`dynamo=True`）走的是 onnxscript 的分解表，对应写法是 `torch.onnx.export(..., custom_translation_table={...})`，与 `register_custom_op_symbolic` 是两套互不相干的机制。
+
+`DeformConv.py` 的实测结论：
+
+- **自定义域算子**：ONNX 官方没有 `deform_conv2d`，符号函数里用 `g.op("custom::deform_conv2d", input, offset)` 造了一个占位节点。导出器会自动给 `custom` 域补上 `opset_import`（version 1），所以 `onnx.checker` 能过。
+- **`parse_args` 仍可用**：`from torch.onnx.symbolic_helper import parse_args`（顶层是兼容 shim，实现在 `_internal/torchscript_exporter/symbolic_helper.py`）。14 个描述符与 torchvision 0.29.2 的 `deform_conv2d(input, weight, offset, mask, bias, ...8 个 int..., use_mask)` 顺序完全一致。
+- **offset 从哪来**：`DeformConv2d(3, 3, 3)` 需要 `2 * offset_groups * kh * kw = 18` 通道的 offset，所以 `forward` 必须是 `self.conv2(x, self.conv1(x))`（conv1 输出 18 通道），写成 `self.conv2(x, self.conv2(x))` 会因通道数不匹配/缺参而失败。
+- **不能做数值验证**：`custom::deform_conv2d` 在 ONNX Runtime 里没有实现，直接推理会报找不到算子；本章只做结构校验（节点 domain / op_type / 输入数）。
+- **预期警告**：导出时会打印 `The shape inference of custom::deform_conv2d type is missing`，因为符号函数没有用 `setType` 标注输出形状；自定义算子出现这条警告属正常现象。
 
 下面是 mmdeploy 教程原文的笔记，供对照：
 
@@ -55,4 +65,12 @@ ch04_onnx_custom_op/
 - ONNX 算子
   - 使用现有 ONNX 算子
   - 定义新 ONNX 算子
+
+---
+
+为算子添加符号函数一般要经过以下几步：
+1. 获取原算子的前向推理接口。(就是pytorch算子)
+2. 获取目标 ONNX 算子的定义。(就是onnx算子)
+3. 编写符号函数并绑定。(自己手动注册把他俩绑定到一起)
+
 
