@@ -18,12 +18,27 @@
 ch04_onnx_custom_op/
 ├── op_Asinh.py            # 给 aten 算子注册符号函数（torch.asinh -> ONNX Asinh）+ 数值验证
 ├── DeformConv.py          # 给 torchvision 算子注册符号函数（custom::deform_conv2d）+ 结构验证
+├── myCppOp/
+│   ├── my_add.cpp         # 自定义 C++ 算子（2a+b），用 pybind11 绑定成 my_lib
+│   ├── setup.py           # 编译 my_lib 扩展
+│   ├── myadd.py           # autograd.Function 封装 + symbolic（Mul + Add）+ 数值验证
+│   └── outputs/
+│       └── my_add.onnx
 └── outputs/
     ├── asinh.onnx
     └── dcn.onnx
 ```
 
 运行方式同样是 `uv run python -m ch04_onnx_custom_op.<脚本名>`（需在仓库根目录执行）。
+
+`myCppOp` 需要先编译 C++ 扩展（**必须在 `myCppOp` 目录下执行**，产物 `my_lib.*.so` 会落在该目录）：
+
+```bash
+cd ch04_onnx_custom_op/myCppOp
+uv run python setup.py build_ext --inplace
+# 然后回仓库根目录
+uv run python -m ch04_onnx_custom_op.myCppOp.myadd
+```
 
 ## 笔记
 
@@ -43,6 +58,14 @@ ch04_onnx_custom_op/
 - **offset 从哪来**：`DeformConv2d(3, 3, 3)` 需要 `2 * offset_groups * kh * kw = 18` 通道的 offset，所以 `forward` 必须是 `self.conv2(x, self.conv1(x))`（conv1 输出 18 通道），写成 `self.conv2(x, self.conv2(x))` 会因通道数不匹配/缺参而失败。
 - **不能做数值验证**：`custom::deform_conv2d` 在 ONNX Runtime 里没有实现，直接推理会报找不到算子；本章只做结构校验（节点 domain / op_type / 输入数）。
 - **预期警告**：导出时会打印 `The shape inference of custom::deform_conv2d type is missing`，因为符号函数没有用 `setType` 标注输出形状；自定义算子出现这条警告属正常现象。
+
+`myCppOp/myadd.py` 的实测结论：
+
+- **必须先编译扩展**：`setup.py build_ext --inplace` 要在 `myCppOp` 目录下执行（产物 `my_lib.*.so` 落在当前目录）。在仓库根目录执行 `setup.py develop` 会因 setuptools 的 flat-layout 自动发现（根目录下有多个顶层目录）而失败，这也是教程原命令在新环境下跑不通的原因。
+- **`symbolic` 优先于 inlining**：PyTorch 的 `NodeToONNX` 只有在 autograd.Function **没有** `symbolic` 时才走 autograd inlining，所以这里定义了 `symbolic` 就会生效，不需要 `autograd_inlining=False`。
+- **`dynamo=False` 必须显式传**：新的 `torch.export` 导出器不支持 `torch.autograd.Function`。
+- **常量类型不用手动 Cast**：`torch.tensor([2])` 是 int64，导出时 `_jit_pass_onnx_scalar_type_analysis` 会把它转成与输入一致的浮点类型，`Mul` 不会类型不匹配。
+- **实测产物**：导出图节点为 `Constant + Mul + Add`，ORT 与 PyTorch 数值一致；`sys.path` 里插入脚本目录，保证 `.so` 在任意 cwd 下都能 import。
 
 下面是 mmdeploy 教程原文的笔记，供对照：
 
