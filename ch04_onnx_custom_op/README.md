@@ -16,17 +16,25 @@
 
 ```text
 ch04_onnx_custom_op/
-├── aten_symbolic.py       # 给 aten 算子注册/覆盖 symbolic（第 2 章的动态 interpolate）
-├── torchscript_op.py      # TorchScript 自定义算子 + symbolic
-├── autograd_function.py   # torch.autograd.Function 里用 g.op 拼 ONNX 节点
+├── op_Asinh.py            # 给 aten 算子注册符号函数（torch.asinh -> ONNX Asinh）+ 数值验证
 └── outputs/
+    └── asinh.onnx
 ```
 
-运行方式同样是 `uv run python -m ch04_onnx_custom_op.<脚本名>`。
+运行方式同样是 `uv run python -m ch04_onnx_custom_op.<脚本名>`（需在仓库根目录执行）。
 
 ## 笔记
 
-<!-- 待补：register_custom_op_symbolic 在 PyTorch 2.x 是否被 onnxscript 取代、各方式实测能否通过 onnx.checker -->
+`op_Asinh.py` 在 torch 2.15 + onnxruntime 1.31 下的实测结论：
+
+- **旧写法不可用**：教程里的 `torch.onnx.symbolic_registry.register_op` 在 PyTorch 2.x 已被删除，import 时会直接 `ModuleNotFoundError`。替代 API 是 `torch.onnx.register_custom_op_symbolic`，算子名必须写成 `aten::asinh`（裸名 `"asinh"` 不行）。
+- **只对旧导出器生效**：`register_custom_op_symbolic` 注册进的是 TorchScript 导出器的符号函数表；torch ≥ 2.9 默认 `dynamo=True`，必须显式传 `dynamo=False`，运行时会出现一条 `DeprecationWarning`，属预期现象。
+- **这个例子仍然有意义**：torch 2.15 的 TorchScript 导出器只内置了 `asin/acos/atan` 的符号函数，没有 `aten::asinh`，不注册就会报 `UnsupportedOperatorError`。注册后导出图里是单个 `Asinh` 节点，`onnx.checker` 可过。
+- **opset 不必等于注册值**：符号函数注册在 opset 9，导出用 opset 20 也能命中 —— 查找规则是“不超过目标 opset 的最大已注册版本”。
+- **输入名别再写死 `"0"`**：新版导出器会沿用 traced graph 的输入名。导出时显式传 `input_names=["input"]`，ORT 侧用 `sess.get_inputs()[0].name` 取真实输入名。
+- **新导出器路线**（`dynamo=True`）走的是 onnxscript 的分解表，对应写法是 `torch.onnx.export(..., custom_translation_table={...})`，与 `register_custom_op_symbolic` 是两套互不相干的机制。
+
+下面是 mmdeploy 教程原文的笔记，供对照：
 
 要使 PyTorch 算子顺利转换到 ONNX ，我们需要保证以下三个环节都不出错：
 
