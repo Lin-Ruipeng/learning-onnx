@@ -14,9 +14,6 @@ wheels/
 *.part
 
 # 推理后端产物（体积大、可重建）
-*.engine
-*.plan
-*.trt
 *.so
 
 # 各章 outputs/ 里均为可重建产物，不再入库

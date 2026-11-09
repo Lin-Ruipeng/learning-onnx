@@ -1,7 +1,7 @@
 [project]
 name = "learning-onnx"
 version = "0.1.0"
-description = "Following MMDeploy's model-deployment tutorial: ONNX export, custom ops, model editing, TensorRT | 跟随 MMDeploy 模型部署入门教程学习 ONNX"
+description = "Following MMDeploy's model-deployment tutorial: ONNX export, custom ops, model editing | 跟随 MMDeploy 模型部署入门教程学习 ONNX"
 readme = "README.md"
 authors = [
     { name = "Lin Ruipeng", email = "likeszm@foxmail.com" }
@@ -30,9 +30,3 @@ explicit = true
 [tool.uv.sources]
 torch = [{ index = "pytorch-cu132" }]
 torchvision = [{ index = "pytorch-cu132" }]
-
-# 第六、七章依赖 TensorRT（需要 NVIDIA 驱动 + TensorRT 8/10 本地安装，不能从 PyPI 装），
-# 打算跑那两章时再单独建环境或在本文件里追加：
-#
-# [project.optional-dependencies]
-# ch06-ch07 = ["tensorrt>=10.0"]
