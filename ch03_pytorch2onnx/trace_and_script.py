@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 
 import torch
 
@@ -20,7 +20,9 @@ class Model(torch.nn.Module):
 models = [Model(2), Model(3)]
 model_names = ["model_2", "model_3"]
 
-os.makedirs("ch03_pytorch2onnx/outputs", exist_ok=True)
+# 输出目录以脚本所在目录为基准，避免依赖运行时的当前工作目录
+output_dir = Path(__file__).with_suffix("").parent / "outputs"
+output_dir.mkdir(parents=True, exist_ok=True)
 
 for model, model_name in zip(models, model_names):
     dummy_input = torch.rand(1, 3, 10, 10)
@@ -40,7 +42,7 @@ for model, model_name in zip(models, model_names):
     torch.onnx.export(
         model_trace,
         dummy_input,
-        f"ch03_pytorch2onnx/outputs/{model_name}_trace.onnx",
+        output_dir / f"{model_name}_trace.onnx",
         dynamo=False,
     )
 
@@ -48,6 +50,6 @@ for model, model_name in zip(models, model_names):
     torch.onnx.export(
         model_script,
         dummy_input,
-        f"ch03_pytorch2onnx/outputs/{model_name}_script.onnx",
+        output_dir / f"{model_name}_script.onnx",
         dynamo=False,
     )
