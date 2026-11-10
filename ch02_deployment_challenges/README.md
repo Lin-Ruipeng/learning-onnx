@@ -6,7 +6,7 @@
 
 - **问题**：第 1 章的 SRCNN 把 `upscale_factor=3` 写死在 `nn.Upsample` 里，导出的 ONNX 只能出 3 倍图。用户手里只有一个 `.onnx`，却想自由设置放大倍数 —— 不改模型文件的前提下一开始做不到。
 - **思路**：把放大倍数从"模型参数"变成"模型输入"。删掉 `nn.Upsample`，让 `forward(x, upscale_factor)` 多收一个缩放系数张量 `[1, 1, h, w]`。
-- **卡点**：PyTorch 的 ONNX 导出不支持「运行时的缩放系数」。`F.interpolate(scale_factor=...，)` 在 trace 时要求这个值是常量，导出会失败或退化。
+- **卡点**：PyTorch 的 ONNX 导出不支持「运行时的缩放系数」。`F.interpolate(scale_factor=...)` 在 trace 时要求这个值是常量，导出会失败或退化。
 - **解法**：`torch.autograd.Function` 是**一个算子、两条实现路径**——
   - `forward`：PyTorch 里实际计算时走这里（`F.interpolate`）；
   - `symbolic`：导出 ONNX 时走这里，用 `g.op("Resize", ...)` 直接拼出 ONNX 节点，把 `scales` 接成图的第二个输入。

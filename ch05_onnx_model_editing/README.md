@@ -17,7 +17,7 @@ ch05_onnx_model_editing/
 ├── create_onnx.py       # 纯 onnx.helper 构造 linear_func.onnx（output = a*x + b）
 ├── modificate_onnx.py   # 读 linear_func.onnx，把 Add 改成 Sub 后另存 linear_func_2.onnx
 ├── debug_onnx.py        # 导出 whole_model.onnx，再用 extract_model 切子图调试
-└── outputs/             # linear_func(_2).onnx、whole_model.onnx、partial/submodel_*.onnx
+└── outputs/             # linear_func(_2).onnx、whole_model.onnx(+.data)、partial/submodel_*.onnx
 ```
 
 三个脚本各自准备所需的模型：前两个用 `create_onnx.py` 导出的 `linear_func.onnx`，

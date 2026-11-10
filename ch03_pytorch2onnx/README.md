@@ -4,7 +4,7 @@
 
 ## 本章要点
 
-- **两种导出方式**：跟踪法（`torch.jit.trace`，只记录实际走过的分支，带控制流会丢）与脚本化（`torch.jit.script`，能保留 `if/for`）。`torch.onnx.export` 默认走跟踪。
+- **两种导出方式**：跟踪法（`torch.jit.trace`，只记录实际走过的分支，带控制流会丢）与脚本化（`torch.jit.script`，能保留 `if/for`）。注意 torch≥2.9 的 `torch.onnx.export` 默认改用 dynamo 导出器，本章脚本都显式传 `dynamo=False`，才走回 TorchScript 的 trace/script。
 - **`torch.onnx.export` 常用参数**：`opset_version`、`input_names` / `output_names`、`dynamic_axes`（不指定就固化 shape，换 batch size 会报 `INVALID_ARGUMENT`）、`do_constant_folding`。
 - **导出期的行为差异**：`torch.onnx.is_in_onnx_export()` 让模型在导出时走不同分支；`.item()`、遍历张量这类操作会中断张量跟踪、把中间结果固化成常量（是坑，反过来也可用于静态化）。
 - **算子支持查询**：ONNX 官方 `Operators.md` 查算子与 opset，PyTorch 侧看 `torch/onnx/symbolic_opset*.py` 里对应 opset 的 `@_onnx_symbolic("aten::xxx")` 映射。
@@ -44,10 +44,9 @@ uv run python -m ch03_pytorch2onnx.dynamic_axes
 比如说在本项目中，可以有这样：
 1. 打开 `.venv/lib/python3.12/site-packages/torch/onnx` 这个路径
 2. 算子版本11就是这个文件： `.venv/lib/python3.12/site-packages/torch/onnx/symbolic_opset11.py`
-3. 从这个文件的 form import 语句进行跳转就可以打开文件： `.venv/lib/python3.12/site-packages/torch/onnx/_internal/torchscript_exporter/symbolic_opset11.py` 
+3. 从这个文件的 from import 语句进行跳转就可以打开文件： `.venv/lib/python3.12/site-packages/torch/onnx/_internal/torchscript_exporter/symbolic_opset11.py` 
 4. 补充，如果你需要找到指定的算子，请在 `torch/onnx` 这个文件夹下直接搜索你要找的算子名称比如说 `bicubic` 
 5. 这里举例的 `bicubic` 这个算子就是在版本11引入的，所以可以在上面打开的这个库文件里搜索到这个算子
-6. 
 
 - 算子注册源码
 ```python
