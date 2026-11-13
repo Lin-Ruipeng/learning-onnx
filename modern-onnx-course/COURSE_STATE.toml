@@ -1,0 +1,213 @@
+schema_version = 1
+course = "modern-onnx-course"
+current = "core-00"
+
+[[chapters]]
+id = "core-00"
+order = 0
+path = "core/ch00_course_protocol"
+title = "课程协议、环境验证与最小现代 ONNX 闭环"
+prerequisites = []
+material = "verified"
+learning = "ready"
+last_verified = "2026-11-13"
+started_at = ""
+completed_at = ""
+evidence = { automatic = [], practice = [], understanding = [] }
+review_gaps = []
+resume_note = "阅读 Chapter 00，从环境重建和最小导出闭环开始。"
+
+[[chapters]]
+id = "core-01"
+order = 1
+path = "core/ch01_deployment_system"
+title = "部署系统分层与 Artifact Contract"
+prerequisites = ["core-00"]
+material = "planned"
+learning = "locked"
+last_verified = ""
+started_at = ""
+completed_at = ""
+evidence = { automatic = [], practice = [], understanding = [] }
+review_gaps = []
+resume_note = ""
+
+[[chapters]]
+id = "core-02"
+order = 2
+path = "core/ch02_torch_export"
+title = "torch.export 与 graph capture"
+prerequisites = ["core-01"]
+material = "planned"
+learning = "locked"
+last_verified = ""
+started_at = ""
+completed_at = ""
+evidence = { automatic = [], practice = [], understanding = [] }
+review_gaps = []
+resume_note = ""
+
+[[chapters]]
+id = "core-03"
+order = 3
+path = "core/ch03_modern_onnx_export"
+title = "现代 torch.onnx 导出器"
+prerequisites = ["core-02"]
+material = "planned"
+learning = "locked"
+last_verified = ""
+started_at = ""
+completed_at = ""
+evidence = { automatic = [], practice = [], understanding = [] }
+review_gaps = []
+resume_note = ""
+
+[[chapters]]
+id = "core-04"
+order = 4
+path = "core/ch04_dynamic_shapes_control_flow"
+title = "Dynamic Shapes 与控制流"
+prerequisites = ["core-03"]
+material = "planned"
+learning = "locked"
+last_verified = ""
+started_at = ""
+completed_at = ""
+evidence = { automatic = [], practice = [], understanding = [] }
+review_gaps = []
+resume_note = ""
+
+[[chapters]]
+id = "core-05"
+order = 5
+path = "core/ch05_export_diagnostics"
+title = "导出报告、失败分类与最小复现"
+prerequisites = ["core-04"]
+material = "planned"
+learning = "locked"
+last_verified = ""
+started_at = ""
+completed_at = ""
+evidence = { automatic = [], practice = [], understanding = [] }
+review_gaps = []
+resume_note = ""
+
+[[chapters]]
+id = "core-06"
+order = 6
+path = "core/ch06_onnx_ir"
+title = "ONNX IR、opset、checker、shape inference 与 external data"
+prerequisites = ["core-05"]
+material = "planned"
+learning = "locked"
+last_verified = ""
+started_at = ""
+completed_at = ""
+evidence = { automatic = [], practice = [], understanding = [] }
+review_gaps = []
+resume_note = ""
+
+[[chapters]]
+id = "core-07"
+order = 7
+path = "core/ch07_numerical_equivalence"
+title = "数值等价、容差和 property-based 输入矩阵"
+prerequisites = ["core-06"]
+material = "planned"
+learning = "locked"
+last_verified = ""
+started_at = ""
+completed_at = ""
+evidence = { automatic = [], practice = [], understanding = [] }
+review_gaps = []
+resume_note = ""
+
+[[chapters]]
+id = "core-08"
+order = 8
+path = "core/ch08_onnx_runtime"
+title = "ONNX Runtime、Execution Provider 与 fallback"
+prerequisites = ["core-07"]
+material = "planned"
+learning = "locked"
+last_verified = ""
+started_at = ""
+completed_at = ""
+evidence = { automatic = [], practice = [], understanding = [] }
+review_gaps = []
+resume_note = ""
+
+[[chapters]]
+id = "core-09"
+order = 9
+path = "core/ch09_performance"
+title = "图优化、profiling 与 benchmark"
+prerequisites = ["core-08"]
+material = "planned"
+learning = "locked"
+last_verified = ""
+started_at = ""
+completed_at = ""
+evidence = { automatic = [], practice = [], understanding = [] }
+review_gaps = []
+resume_note = ""
+
+[[chapters]]
+id = "core-10"
+order = 10
+path = "core/ch10_quantization"
+title = "FP16、INT8 PTQ 与量化实验"
+prerequisites = ["core-09"]
+material = "planned"
+learning = "locked"
+last_verified = ""
+started_at = ""
+completed_at = ""
+evidence = { automatic = [], practice = [], understanding = [] }
+review_gaps = []
+resume_note = ""
+
+[[chapters]]
+id = "core-11"
+order = 11
+path = "core/ch11_python_deployment"
+title = "Python 部署、持久 session 与 artifact packaging"
+prerequisites = ["core-10"]
+material = "planned"
+learning = "locked"
+last_verified = ""
+started_at = ""
+completed_at = ""
+evidence = { automatic = [], practice = [], understanding = [] }
+review_gaps = []
+resume_note = ""
+
+[[chapters]]
+id = "core-12"
+order = 12
+path = "core/ch12_ort_cpp"
+title = "ONNX Runtime C++、CMake 与接口契约"
+prerequisites = ["core-11"]
+material = "planned"
+learning = "locked"
+last_verified = ""
+started_at = ""
+completed_at = ""
+evidence = { automatic = [], practice = [], understanding = [] }
+review_gaps = []
+resume_note = ""
+
+[[chapters]]
+id = "core-13"
+order = 13
+path = "core/ch13_srcnn_migration_bridge"
+title = "SRCNN Migration Bridge 与核心课综合验收"
+prerequisites = ["core-12"]
+material = "planned"
+learning = "locked"
+last_verified = ""
+started_at = ""
+completed_at = ""
+evidence = { automatic = [], practice = [], understanding = [] }
+review_gaps = []
+resume_note = ""

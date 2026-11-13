@@ -39,6 +39,9 @@ jobs:
           uv run ruff check .
           uv run ruff format --check .
 
+      - name: Validate course state
+        run: uv run python tools/check_course_state.py
+
       - name: Test CPU baseline
         run: uv run pytest
 

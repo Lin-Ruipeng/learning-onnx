@@ -13,24 +13,32 @@ uv run pytest
 
 不需要手工执行 `source .venv/bin/activate`。所有命令从本目录运行，并通过 `uv run` 进入锁定环境。
 
+## 学习进度
+
+[`COURSE_STATE.toml`](COURSE_STATE.toml) 是教材与学习进度的唯一事实源。在新聊天中说“继续课程”，Agent 会从当前章节的恢复点开始。手工修改进度后可运行：
+
+```bash
+uv run python tools/check_course_state.py
+```
+
 ## Core Course
 
-| 章节 | 主题 | 状态 |
+| 章节 | 主题 | 教材状态 |
 |---|---|---|
-| [00](core/ch00_course_protocol/README.md) | 课程协议、环境验证与最小现代 ONNX 闭环 | 已完成 |
-| 01 | 部署系统分层与 Artifact Contract | 计划中 |
-| 02 | `torch.export` 与 graph capture | 计划中 |
-| 03 | 现代 `torch.onnx` 导出器 | 计划中 |
-| 04 | Dynamic Shapes 与控制流 | 计划中 |
-| 05 | 导出报告、失败分类与最小复现 | 计划中 |
-| 06 | ONNX IR、opset、checker、shape inference 与 external data | 计划中 |
-| 07 | 数值等价、容差和 property-based 输入矩阵 | 计划中 |
-| 08 | ONNX Runtime、Execution Provider 与 fallback | 计划中 |
-| 09 | 图优化、profiling 与 benchmark | 计划中 |
-| 10 | FP16、INT8 PTQ 与量化实验 | 计划中 |
-| 11 | Python 部署、持久 session 与 artifact packaging | 计划中 |
-| 12 | ONNX Runtime C++、CMake 与接口契约 | 计划中 |
-| 13 | SRCNN Migration Bridge 与核心课综合验收 | 计划中 |
+| [00](core/ch00_course_protocol/README.md) | 课程协议、环境验证与最小现代 ONNX 闭环 | `verified` |
+| 01 | 部署系统分层与 Artifact Contract | `planned` |
+| 02 | `torch.export` 与 graph capture | `planned` |
+| 03 | 现代 `torch.onnx` 导出器 | `planned` |
+| 04 | Dynamic Shapes 与控制流 | `planned` |
+| 05 | 导出报告、失败分类与最小复现 | `planned` |
+| 06 | ONNX IR、opset、checker、shape inference 与 external data | `planned` |
+| 07 | 数值等价、容差和 property-based 输入矩阵 | `planned` |
+| 08 | ONNX Runtime、Execution Provider 与 fallback | `planned` |
+| 09 | 图优化、profiling 与 benchmark | `planned` |
+| 10 | FP16、INT8 PTQ 与量化实验 | `planned` |
+| 11 | Python 部署、持久 session 与 artifact packaging | `planned` |
+| 12 | ONNX Runtime C++、CMake 与接口契约 | `planned` |
+| 13 | SRCNN Migration Bridge 与核心课综合验收 | `planned` |
 
 ## 验收规则
 
